@@ -2,17 +2,18 @@ import * as React from "react";
 import styled from "styled-components";
 
 const GridContainer = styled.div`
-	border: 1px solid black;
+	width: 100%;
 	display: flex;
-
 	justify-content: space-around;
 	align-items: center;
 `;
 const ColumnContainer = styled.div`
-	border: 2px solid blue;
 	width: 300px;
 	display: flex;
-	flex-direction: column;
+	flex-direction: column; 
+	* {
+		padding
+	}
 `;
 
 export default class Grid extends React.Component<Props, State> {
