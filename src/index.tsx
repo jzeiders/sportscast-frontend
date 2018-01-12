@@ -9,7 +9,8 @@ import { ApolloLink } from "apollo-link";
 
 import ApolloClient from "apollo-client";
 import { InMemoryCache } from "apollo-cache-inmemory";
-import { HttpLink } from "apollo-link-http";
+import { createHttpLink } from "apollo-link-http";
+import { setContext } from "apollo-link-context";
 // import { WebSocketLink } from "apollo-link-ws";
 
 const GRAPHQL_ENDPOINT = "sportscast-189523.appspot.com/graphql";
@@ -17,15 +18,24 @@ const GRAPHQL_ENDPOINT = "sportscast-189523.appspot.com/graphql";
 // const WS_GRAPHQL_ENDPOINT = "ws://" + GRAPHQL_ENDPOINT;
 const HTTP_GRAPHQL_ENDPOINT = "http://" + GRAPHQL_ENDPOINT;
 
-// const subscriptionClient = new SubscriptionClient(WS_GRAPHQL_ENDPOINT, {
-// 	reconnect: true
-// });
+const httpLink = createHttpLink({
+	uri: HTTP_GRAPHQL_ENDPOINT
+});
 
-// const wsLink = new WebSocketLink(subscriptionClient);
+const authLink = setContext((_, { headers }) => {
+	const token = localStorage.getItem("idToken");
+	return {
+		headers: {
+			...headers,
+			authorization: token ? `Bearer ${token}` : null
+		}
+	};
+});
 
 const link = ApolloLink.from([
 	// wsLink,
-	new HttpLink({ uri: HTTP_GRAPHQL_ENDPOINT })
+	authLink,
+	httpLink
 ]);
 
 const client = new ApolloClient({
