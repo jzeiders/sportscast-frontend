@@ -13,40 +13,41 @@ import { createHttpLink } from "apollo-link-http";
 import { setContext } from "apollo-link-context";
 // import { WebSocketLink } from "apollo-link-ws";
 
-const GRAPHQL_ENDPOINT = "sportscast-189523.appspot.com/graphql";
+// const GRAPHQL_ENDPOINT = "sportscast-189523.appspot.com/graphql";
+const GRAPHQL_ENDPOINT = "localhost:8080/graphql";
 
 // const WS_GRAPHQL_ENDPOINT = "ws://" + GRAPHQL_ENDPOINT;
 const HTTP_GRAPHQL_ENDPOINT = "http://" + GRAPHQL_ENDPOINT;
 
 const httpLink = createHttpLink({
-	uri: HTTP_GRAPHQL_ENDPOINT
+  uri: HTTP_GRAPHQL_ENDPOINT
 });
 
 const authLink = setContext((_, { headers }) => {
-	const token = localStorage.getItem("idToken");
-	return {
-		headers: {
-			...headers,
-			authorization: token ? `Bearer ${token}` : null
-		}
-	};
+  const token = localStorage.getItem("id_token");
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : null
+    }
+  };
 });
 
 const link = ApolloLink.from([
-	// wsLink,
-	authLink,
-	httpLink
+  // wsLink,
+  authLink,
+  httpLink
 ]);
 
 const client = new ApolloClient({
-	link,
-	cache: new InMemoryCache()
+  link,
+  cache: new InMemoryCache()
 });
 
 ReactDOM.render(
-	<ApolloProvider client={client}>
-		<App />
-	</ApolloProvider>,
-	document.getElementById("root") as HTMLElement
+  <ApolloProvider client={client}>
+    <App />
+  </ApolloProvider>,
+  document.getElementById("root") as HTMLElement
 );
 registerServiceWorker();
